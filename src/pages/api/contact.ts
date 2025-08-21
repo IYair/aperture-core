@@ -35,10 +35,7 @@ export const POST: APIRoute = async ({ request, clientAddress, redirect }) => {
     const lastRequest = RATE_LIMIT_MAP.get(clientAddress) || 0;
     
     if (now - lastRequest < RATE_LIMIT_WINDOW) {
-      return new Response(
-        JSON.stringify({ ok: false, message: 'Demasiadas solicitudes, intenta en unos segundos' }),
-        { status: 429, headers: { 'Content-Type': 'application/json' } }
-      );
+      return redirect('/error?message=' + encodeURIComponent('Demasiadas solicitudes, intenta en unos segundos') + '&code=429', 302);
     }
     
     RATE_LIMIT_MAP.set(clientAddress, now);
@@ -60,10 +57,7 @@ export const POST: APIRoute = async ({ request, clientAddress, redirect }) => {
     if (data._ts) {
       const formOpenTime = parseInt(data._ts);
       if (now - formOpenTime < 3000) {
-        return new Response(
-          JSON.stringify({ ok: false, message: 'Formulario enviado demasiado rápido' }),
-          { status: 400, headers: { 'Content-Type': 'application/json' } }
-        );
+        return redirect('/error?message=' + encodeURIComponent('Formulario enviado demasiado rápido') + '&code=400', 302);
       }
     }
     
@@ -75,19 +69,13 @@ export const POST: APIRoute = async ({ request, clientAddress, redirect }) => {
     
     // Validation
     if (!data.name || !data.email || !data.message || !data.consent) {
-      return new Response(
-        JSON.stringify({ ok: false, message: 'Campos requeridos faltantes' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return redirect('/error?message=' + encodeURIComponent('Campos requeridos faltantes') + '&code=400', 302);
     }
     
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(data.email)) {
-      return new Response(
-        JSON.stringify({ ok: false, message: 'Email inválido' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return redirect('/error?message=' + encodeURIComponent('Email inválido') + '&code=400', 302);
     }
 
     // Spam content detection
@@ -113,10 +101,7 @@ export const POST: APIRoute = async ({ request, clientAddress, redirect }) => {
 
     // Message length validation
     if (data.message.length > 2000 || data.message.length < 10) {
-      return new Response(
-        JSON.stringify({ ok: false, message: 'El mensaje debe tener entre 10 y 2000 caracteres' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return redirect('/error?message=' + encodeURIComponent('El mensaje debe tener entre 10 y 2000 caracteres') + '&code=400', 302);
     }
     
     // Log legitimate contact for monitoring
@@ -128,10 +113,7 @@ export const POST: APIRoute = async ({ request, clientAddress, redirect }) => {
     return redirect('/gracias', 302);
   } catch (error) {
     console.error('Contact form error:', error);
-    return new Response(
-      JSON.stringify({ ok: false, message: 'Error interno del servidor' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+    return redirect('/error?message=' + encodeURIComponent('Error interno del servidor') + '&code=500', 302);
   }
 };
 
