@@ -138,7 +138,7 @@ export const POST: APIRoute = async ({ request, clientAddress, redirect }) => {
 async function sendContactEmail(data: ContactFormData, clientIP: string) {
   const { Resend } = await import('resend');
   
-  const resendApiKey = import.meta.env.RESEND_API_KEY;
+  const resendApiKey = process.env.RESEND_API_KEY;
   if (!resendApiKey) {
     console.error('RESEND_API_KEY environment variable is not set');
     throw new Error('Email service not configured');
@@ -146,8 +146,8 @@ async function sendContactEmail(data: ContactFormData, clientIP: string) {
   
   const resend = new Resend(resendApiKey);
   
-  const toEmail = import.meta.env.CONTACT_TO || 'info@aperturecore.com';
-  const fromEmail = import.meta.env.CONTACT_FROM || 'noreply@aperturecore.com';
+  const toEmail = process.env.CONTACT_TO || 'info@aperturecore.com';
+  const fromEmail = process.env.CONTACT_FROM || 'noreply@aperturecore.com';
   
   try {
     const { data: result, error } = await resend.emails.send({
