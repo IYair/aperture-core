@@ -17,6 +17,62 @@ const {
   noindex = false
 } = Astro.props as Props;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : undefined;
+
+// Structured data for SEO
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Aperture Core',
+  url: 'https://aperturecore.com',
+  logo: {
+    '@type': 'ImageObject',
+    url: 'https://aperturecore.com/favicon.svg'
+  },
+  description: 'Agencia de desarrollo de software especializada en MVPs, equipos dedicados y modernización tecnológica',
+  foundingDate: '2024',
+  contactPoint: {
+    '@type': 'ContactPoint',
+    telephone: '+34-XXX-XXX-XXX',
+    contactType: 'customer service',
+    email: 'info@aperturecore.com',
+    availableLanguage: ['Spanish', 'English']
+  },
+  address: {
+    '@type': 'PostalAddress',
+    addressCountry: 'ES'
+  },
+  sameAs: [
+    'https://github.com/aperturecore',
+    'https://linkedin.com/company/aperturecore'
+  ],
+  makesOffer: [
+    {
+      '@type': 'Offer',
+      itemOffered: {
+        '@type': 'Service',
+        name: 'Desarrollo de MVP',
+        description: 'Desarrollo rápido de productos mínimos viables'
+      }
+    },
+    {
+      '@type': 'Offer',
+      itemOffered: {
+        '@type': 'Service',
+        name: 'Equipos Dedicados',
+        description: 'Equipos de desarrollo especializados'
+      }
+    },
+    {
+      '@type': 'Offer',
+      itemOffered: {
+        '@type': 'Service',
+        name: 'Modernización de Software',
+        description: 'Actualización y optimización de sistemas existentes'
+      }
+    }
+  ]
+};
+
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import "../styles/global.css";
@@ -36,6 +92,9 @@ import "../styles/global.css";
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="theme-color" content="#4f46e5" />
+    
+    <!-- Google Search Console Verification (añadir tu código cuando lo tengas) -->
+    <!-- <meta name="google-site-verification" content="TU_CODIGO_AQUI" /> -->
     
     <!-- Favicons -->
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -63,62 +122,23 @@ import "../styles/global.css";
     <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:image:alt" content={title} />
     <!-- JSON-LD Structured Data -->
-    <script type="application/ld+json">{JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'Organization',
-      name: 'Aperture Core',
-      url: 'https://aperturecore.com',
-      logo: {
-        '@type': 'ImageObject',
-        url: 'https://aperturecore.com/favicon.svg'
-      },
-      description: 'Agencia de desarrollo de software especializada en MVPs, equipos dedicados y modernización tecnológica',
-      foundingDate: '2024',
-      contactPoint: {
-        '@type': 'ContactPoint',
-        telephone: '+34-XXX-XXX-XXX',
-        contactType: 'customer service',
-        email: 'info@aperturecore.com',
-        availableLanguage: ['Spanish', 'English']
-      },
-      address: {
-        '@type': 'PostalAddress',
-        addressCountry: 'ES'
-      },
-      sameAs: [
-        'https://github.com/aperturecore',
-        'https://linkedin.com/company/aperturecore'
-      ],
-      makesOffer: [
-        {
-          '@type': 'Offer',
-          itemOffered: {
-            '@type': 'Service',
-            name: 'Desarrollo de MVP',
-            description: 'Desarrollo rápido de productos mínimos viables'
-          }
-        },
-        {
-          '@type': 'Offer',
-          itemOffered: {
-            '@type': 'Service',
-            name: 'Equipos Dedicados',
-            description: 'Equipos de desarrollo especializados'
-          }
-        },
-        {
-          '@type': 'Offer',
-          itemOffered: {
-            '@type': 'Service',
-            name: 'Modernización de Software',
-            description: 'Actualización y optimización de sistemas existentes'
-          }
-        }
-      ]
-    })}</script>
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(organizationSchema)}></script>
     {import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN && (
       <script defer data-domain={import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN} src="https://plausible.io/js/script.js"></script>
     )}
+    
+    <!-- Google Analytics (opcional - añadir tu GA4 ID) -->
+    <!-- {import.meta.env.PUBLIC_GA_ID && (
+      <>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${import.meta.env.PUBLIC_GA_ID}`}></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', import.meta.env.PUBLIC_GA_ID);
+        </script>
+      </>
+    )} -->
     <!-- Preconnect for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
