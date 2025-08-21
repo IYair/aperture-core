@@ -1,24 +1,26 @@
 FROM node:18-alpine AS base
 
-# Install dependencies only when needed
-FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+# Install production dependencies
+FROM base AS deps-prod
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
-
-# Copy package files
 COPY package.json package-lock.json* ./
-
-# Install dependencies
 RUN npm ci --only=production --frozen-lockfile
 
-# Rebuild the source code only when needed
+# Install all dependencies (for build)
+FROM base AS deps-build
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+COPY package.json package-lock.json* ./
+RUN npm ci --frozen-lockfile
+
+# Build the application
 FROM base AS builder
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Copy dependencies
-COPY --from=deps /app/node_modules ./node_modules
+# Copy all dependencies (including devDependencies for build)
+COPY --from=deps-build /app/node_modules ./node_modules
 COPY . .
 
 # Build the app
@@ -39,7 +41,7 @@ RUN mkdir -p /app/dist && chown -R astro:nodejs /app
 
 # Copy built application and only production dependencies
 COPY --from=builder --chown=astro:nodejs /app/dist ./dist
-COPY --from=deps --chown=astro:nodejs /app/node_modules ./node_modules
+COPY --from=deps-prod --chown=astro:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=astro:nodejs /app/package.json ./package.json
 
 # Switch to non-root user
