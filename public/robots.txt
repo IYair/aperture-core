@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://aperturecore.com/sitemap-index.xml

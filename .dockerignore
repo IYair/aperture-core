@@ -1,0 +1,10 @@
+node_modules
+npm-debug.log*
+.npm
+.nyc_output
+.cache
+.vscode
+.env.local
+.env.*.local
+dist
+.astro

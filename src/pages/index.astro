@@ -1,0 +1,93 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ContactForm from "../components/ContactForm.astro";
+---
+
+<BaseLayout title="Aperture Core — Agencia de software" description="Software a medida para acelerar tu negocio: MVPs rápidos, plataformas escalables y equipos dedicados.">
+	<section class="bg-gradient-to-b from-indigo-50 to-white">
+		<div class="mx-auto max-w-6xl px-4 py-20 lg:py-28 grid gap-10 lg:grid-cols-2 lg:items-center">
+			<div>
+				<h1 class="text-4xl/tight md:text-5xl font-bold tracking-tight text-slate-900">Aceleramos tu producto con ingeniería senior</h1>
+				<p class="mt-5 text-lg text-slate-600">Diseñamos y construimos software a medida con foco en impacto: time‑to‑market corto, calidad en producción y métricas claras.</p>
+				<div class="mt-8 flex gap-3">
+					<a href="/contacto" class="inline-flex items-center rounded-md bg-indigo-600 px-5 py-3 text-white font-medium hover:bg-indigo-700">
+						Solicita una propuesta
+					</a>
+					<a href="/servicios" class="inline-flex items-center rounded-md border px-5 py-3 text-slate-700 font-medium hover:bg-slate-50">
+						Ver servicios
+					</a>
+				</div>
+				<p class="mt-4 text-xs text-slate-500">Respuesta en menos de 24h laborables. info@aperturecore.com</p>
+			</div>
+			<div class="relative">
+				<div class="aspect-[4/3] w-full rounded-xl border bg-white shadow-sm flex items-center justify-center p-6">
+					<div class="text-center">
+						<p class="text-slate-800 font-semibold">Tecnologías</p>
+						<p class="mt-3 text-slate-500">TypeScript • Node • Python • Astro/Next • AWS • PostgreSQL</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="servicios" class="py-16 lg:py-20">
+		<div class="mx-auto max-w-6xl px-4">
+			<h2 class="text-2xl md:text-3xl font-semibold">Qué hacemos</h2>
+			<p class="mt-2 text-slate-600">Selecciona el formato que mejor encaje con tu etapa.</p>
+			<div class="mt-8 grid gap-6 md:grid-cols-3">
+				<div class="rounded-lg border p-6">
+					<h3 class="font-semibold text-lg">MVP en semanas</h3>
+					<p class="mt-2 text-slate-600">De la idea a producción con alcance claro, medición y un stack moderno.</p>
+				</div>
+				<div class="rounded-lg border p-6">
+					<h3 class="font-semibold text-lg">Equipos dedicados</h3>
+					<p class="mt-2 text-slate-600">Aumenta tu capacidad con un squad senior y procesos sólidos de entrega.</p>
+				</div>
+				<div class="rounded-lg border p-6">
+					<h3 class="font-semibold text-lg">Modernización</h3>
+					<p class="mt-2 text-slate-600">Mejora performance, seguridad y DX sin frenar el negocio.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="py-16 lg:py-20 bg-slate-50">
+		<div class="mx-auto max-w-6xl px-4 grid gap-10 lg:grid-cols-2 lg:items-center">
+			<div>
+				<h2 class="text-2xl md:text-3xl font-semibold">Nuestro proceso</h2>
+				<ul class="mt-6 space-y-3 text-slate-700">
+					<li>1. Descubrimiento y definición de KPIs</li>
+					<li>2. Diseño de arquitectura y UX centrada en valor</li>
+					<li>3. Entregas iterativas con demo y feedback</li>
+					<li>4. Observabilidad, performance y seguridad desde el día 1</li>
+				</ul>
+				<p class="mt-4 text-slate-600">Sectores: SaaS B2B, Ecommerce, Fintech, Salud, Educación.</p>
+			</div>
+			<div>
+				<div class="rounded-xl border bg-white p-6 shadow-sm">
+					<h3 class="font-semibold">¿Listo para empezar?</h3>
+					<p class="mt-2 text-slate-600">Cuéntanos sobre tu proyecto. Respondemos el mismo día hábil.</p>
+					<div class="mt-6">
+						<ContactForm compact={true} />
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="py-16 lg:py-20">
+		<div class="mx-auto max-w-6xl px-4">
+			<h2 class="text-2xl md:text-3xl font-semibold">Testimonios</h2>
+			<div class="mt-8 grid gap-6 md:grid-cols-2">
+				<blockquote class="rounded-lg border bg-white p-6">
+					<p class="text-slate-800">“Entregaron nuestro MVP en 6 semanas y pudimos validar con clientes reales. Excelente comunicación.”</p>
+					<footer class="mt-3 text-sm text-slate-600">CEO, SaaS B2B</footer>
+				</blockquote>
+				<blockquote class="rounded-lg border bg-white p-6">
+					<p class="text-slate-800">“Rearquitecturaron el core sin downtime y bajamos los costes de infraestructura un 28%.”</p>
+					<footer class="mt-3 text-sm text-slate-600">CTO, Ecommerce</footer>
+				</blockquote>
+			</div>
+		</div>
+	</section>
+</BaseLayout>

@@ -1,0 +1,43 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Casos de éxito — Aperture Core" description="Resultados logrados para clientes reales.">
+  <section class="py-12 lg:py-20">
+    <div class="mx-auto max-w-6xl px-4">
+      <script type="application/ld+json">{JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://aperturecore.com/' },
+          { '@type': 'ListItem', position: 2, name: 'Casos', item: 'https://aperturecore.com/casos/' }
+        ]
+      })}</script>
+      <h1 class="text-3xl md:text-4xl font-bold tracking-tight">Casos de éxito</h1>
+      <p class="mt-3 max-w-3xl text-slate-600">Una muestra de proyectos recientes. Cada engagement inicia con objetivos y métricas claras, y entregas quincenales visibles.</p>
+      <div class="mt-8 grid gap-6 md:grid-cols-2">
+        <article class="rounded-lg border p-6 bg-white shadow-sm">
+          <h2 class="font-semibold">Ecommerce B2B en 8 semanas</h2>
+          <p class="mt-2 text-slate-600">+35% conversión implementando catálogo headless, pricing por segmento y checkout optimizado.</p>
+          <ul class="mt-4 list-disc pl-5 text-slate-600 space-y-1">
+            <li>Stack: Next.js, NestJS, PostgreSQL, Stripe.</li>
+            <li>Integraciones: ERP y logística.</li>
+            <li>Observabilidad con dashboards de negocio.</li>
+          </ul>
+        </article>
+        <article class="rounded-lg border p-6 bg-white shadow-sm">
+          <h2 class="font-semibold">Plataforma de datos self‑service</h2>
+          <p class="mt-2 text-slate-600">Redujimos el tiempo de reportes de días a minutos con pipelines robustos.</p>
+          <ul class="mt-4 list-disc pl-5 text-slate-600 space-y-1">
+            <li>Ingesta y modelado escalable.</li>
+            <li>Dashboards operativos y alertas.</li>
+            <li>Gobernanza y catálogo de datos.</li>
+          </ul>
+        </article>
+      </div>
+      <div class="mt-10 flex">
+        <a href="/contacto" class="inline-flex items-center rounded-md bg-black px-5 py-3 text-white font-medium hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-black/20">¿Hablamos de tu caso?</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
