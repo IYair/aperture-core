@@ -1,10 +1,41 @@
+# Dependencies
 node_modules
 npm-debug.log*
 .npm
 .nyc_output
-.cache
-.vscode
-.env.local
-.env.*.local
+
+# Build outputs
 dist
 .astro
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Development files
+.cache
+.vscode
+.idea
+*.log
+
+# Git
+.git
+.gitignore
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage
+.nyc_output
+
+# Documentation
+README.md
+CLAUDE.md
+*.md
+
+# Docker
+Dockerfile*
+.dockerignore
