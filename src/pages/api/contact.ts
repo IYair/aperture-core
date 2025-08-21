@@ -1,4 +1,6 @@
 import type { APIRoute } from 'astro';
+import { getCompanyNotificationTemplate } from '../../lib/email-templates/company-notification';
+import { getClientConfirmationTemplate } from '../../lib/email-templates/client-confirmation';
 
 const RATE_LIMIT_MAP = new Map<string, number>();
 const RATE_LIMIT_WINDOW = 10 * 1000; // 10 seconds
@@ -89,9 +91,9 @@ export const POST: APIRoute = async ({ request, clientAddress, redirect }) => {
     }
 
     // Suspicious pattern detection
-    const urlCount = (data.message.match(/https?:\/\/[^\s]+/gi) || []).length;
-    const hasExcessiveCaps = /[A-Z]{10,}/.test(data.message);
-    const hasRepeatedChars = /(.{1,3})\1{4,}/.test(data.message);
+    const urlCount = (data.message.match(SUSPICIOUS_PATTERNS[0]) || []).length;
+    const hasExcessiveCaps = SUSPICIOUS_PATTERNS[1].test(data.message);
+    const hasRepeatedChars = SUSPICIOUS_PATTERNS[2].test(data.message);
     
     if (urlCount > 2 || hasExcessiveCaps || hasRepeatedChars) {
       console.log(`Suspicious content detected from IP ${clientAddress}`);
@@ -107,8 +109,9 @@ export const POST: APIRoute = async ({ request, clientAddress, redirect }) => {
     // Log legitimate contact for monitoring
     console.log(`Legitimate contact from ${clientAddress}: ${data.email}`);
     
-    // Send email using your preferred service
+    // Send emails (to company and confirmation to client)
     await sendContactEmail(data, clientAddress);
+    await sendConfirmationEmail(data);
     
     return redirect('/gracias', 302);
   } catch (error) {
@@ -131,52 +134,16 @@ async function sendContactEmail(data: ContactFormData, clientIP: string) {
   const toEmail = process.env.CONTACT_TO || 'info@aperturecore.com';
   const fromEmail = process.env.CONTACT_FROM || 'noreply@aperturecore.com';
   
+  const template = getCompanyNotificationTemplate(data, clientIP);
+  
   try {
     const { data: result, error } = await resend.emails.send({
       from: fromEmail,
       to: toEmail,
       replyTo: data.email,
-      subject: `Nuevo lead desde la web — ${data.name}`,
-      html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #4f46e5;">Nuevo contacto desde ApertureCore.com</h2>
-          
-          <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <p><strong>Nombre:</strong> ${data.name}</p>
-            <p><strong>Email:</strong> <a href="mailto:${data.email}">${data.email}</a></p>
-            <p><strong>Empresa:</strong> ${data.company || 'No especificada'}</p>
-            <p><strong>Presupuesto:</strong> ${data.budget}</p>
-          </div>
-          
-          <div style="margin: 20px 0;">
-            <h3 style="color: #374151;">Mensaje:</h3>
-            <div style="background: white; padding: 15px; border-left: 4px solid #4f46e5; white-space: pre-wrap;">${data.message}</div>
-          </div>
-          
-          <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb;">
-          
-          <div style="font-size: 12px; color: #6b7280;">
-            <p><strong>Información técnica:</strong></p>
-            <p>IP: ${clientIP}</p>
-            <p>Timestamp: ${new Date().toLocaleString('es-ES', { timeZone: 'Europe/Madrid' })}</p>
-          </div>
-        </div>
-      `,
-      text: `
-Nuevo contacto desde ApertureCore.com
-
-Nombre: ${data.name}
-Email: ${data.email}
-Empresa: ${data.company || 'No especificada'}
-Presupuesto: ${data.budget}
-
-Mensaje:
-${data.message}
-
----
-IP: ${clientIP}
-Timestamp: ${new Date().toISOString()}
-      `.trim()
+      subject: template.subject,
+      html: template.html,
+      text: template.text
     });
 
     if (error) {
@@ -189,5 +156,45 @@ Timestamp: ${new Date().toISOString()}
   } catch (error) {
     console.error('Error sending email with Resend:', error);
     throw error;
+  }
+}
+
+async function sendConfirmationEmail(data: ContactFormData) {
+  const { Resend } = await import('resend');
+  
+  const resendApiKey = process.env.RESEND_API_KEY;
+  if (!resendApiKey) {
+    console.error('RESEND_API_KEY environment variable is not set');
+    throw new Error('Email service not configured');
+  }
+  
+  const resend = new Resend(resendApiKey);
+  const fromEmail = process.env.CONTACT_FROM || 'noreply@aperturecore.com';
+  
+  const template = getClientConfirmationTemplate(data);
+  
+  try {
+    const { data: result, error } = await resend.emails.send({
+      from: fromEmail,
+      to: data.email,
+      subject: template.subject,
+      html: template.html,
+      text: template.text
+    });
+
+    if (error) {
+      console.error('Resend API error (confirmation email):', error);
+      // Don't throw error for confirmation email to avoid breaking the main flow
+      console.log('Confirmation email failed but main email sent successfully');
+      return null;
+    }
+
+    console.log('Confirmation email sent successfully:', result);
+    return result;
+  } catch (error) {
+    console.error('Error sending confirmation email with Resend:', error);
+    // Don't throw error for confirmation email to avoid breaking the main flow
+    console.log('Confirmation email failed but main email sent successfully');
+    return null;
   }
 }
