@@ -3,8 +3,10 @@ Allow: /
 
 # Disallow internal/admin pages (if any)
 Disallow: /api/
-Disallow: /_astro/
+Disallow: /_astro/*.js
 Disallow: /dist/
+# Allow CSS files for proper rendering
+Allow: /_astro/*.css
 
 # Allow important pages
 Allow: /servicios
